@@ -6,11 +6,18 @@
   "author": "Eliseu Videira <eliseuvideira1@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "body-parser": "^1.19.0",
+    "concurrently": "^5.0.0",
     "electron": "1",
     "eslint": "^6.6.0",
-    "menubar": "5"
+    "express": "^4.17.1",
+    "menubar": "5",
+    "node-fetch": "^2.6.0",
+    "uuid": "^3.3.3"
   },
   "scripts": {
-    "start": "electron ."
+    "electron": "electron .",
+    "server": "node api/server.js",
+    "start": "concurrently -n node,electron -i \"yarn server\" \"yarn electron\""
   }
 }

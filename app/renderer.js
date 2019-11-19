@@ -1,4 +1,5 @@
 const { clipboard } = require('electron');
+const fetch = require('node-fetch');
 
 const clippingsList = document.querySelector('#clippings-list');
 const btnCopyFromClipboard = document.querySelector('#copy-from-clipboard');
@@ -40,6 +41,20 @@ const writeToClipboard = (clippingText) => {
   clipboard.writeText(clippingText);
 };
 
+const publishClipping = async (clipping) => {
+  const response = await fetch('http://localhost:3000/clippings', {
+    method: 'POST',
+    body: JSON.stringify({ clipping }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).catch((err) => console.log(err));
+  const data = await response.json();
+  const url = data.url;
+  alert(url);
+  clipboard.writeText(url);
+};
+
 btnCopyFromClipboard.addEventListener('click', addClippingToList);
 
 clippingsList.addEventListener('click', (event) => {
@@ -54,6 +69,6 @@ clippingsList.addEventListener('click', (event) => {
     writeToClipboard(getClippingText(clippingListItem));
   }
   if (hasClass('publish-clipping')) {
-    console.log('publish clipping');
+    publishClipping(getClippingText(clippingListItem));
   }
 });
