@@ -1,4 +1,4 @@
-const { clipboard, shell } = require('electron');
+const { clipboard, shell, ipcRenderer } = require('electron');
 const fetch = require('node-fetch');
 
 const clippingsList = document.querySelector('#clippings-list');
@@ -79,4 +79,21 @@ clippingsList.addEventListener('click', (event) => {
   if (hasClass('publish-clipping')) {
     publishClipping(getClippingText(clippingListItem));
   }
+});
+
+// ipcRenderer events
+
+ipcRenderer.on('create-new-clipping', () => {
+  addClippingToList();
+  new Notification('Clipping Added', { body: `${clipboard.readText()}` });
+});
+
+ipcRenderer.on('write-to-clipboard', () => {
+  const clipping = clippingsList.firstChild;
+  writeToClipboard(getClippingText(clipping));
+});
+
+ipcRenderer.on('publish-clipping', () => {
+  const clipping = clippingsList.firstChild;
+  publishClipping(getClippingText(clipping));
 });
