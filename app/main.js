@@ -1,13 +1,27 @@
 const Menubar = require('menubar');
-const { globalShortcut } = require('electron');
+const { globalShortcut, Menu } = require('electron');
 
 const menubar = Menubar({
   preloadWindow: true,
   index: `file://${__dirname}/index.html`,
 });
 
+const secondaryMenu = Menu.buildFromTemplate([
+  {
+    label: 'Quit',
+    click() {
+      menubar.app.quit();
+    },
+    accelerator: 'CommandOrControl+Q',
+  },
+]);
+
 menubar.on('ready', () => {
   console.log('Application is ready');
+
+  menubar.tray.on('right-click', () => {
+    menubar.tray.popUpContextMenu(secondaryMenu);
+  });
 
   const createClipping = globalShortcut.register(
     'Shift+CommandOrControl+C',
