@@ -1,4 +1,4 @@
-const { clipboard } = require('electron');
+const { clipboard, shell } = require('electron');
 const fetch = require('node-fetch');
 
 const clippingsList = document.querySelector('#clippings-list');
@@ -51,7 +51,15 @@ const publishClipping = async (clipping) => {
   }).catch((err) => console.log(err));
   const data = await response.json();
   const url = data.url;
-  alert(url);
+
+  const notification = new Notification('Your Clipping Has Been Published', {
+    body: `Click to open ${url} in your browser`,
+  });
+
+  notification.onclick = () => {
+    shell.openExternal(url);
+  };
+
   clipboard.writeText(url);
 };
 
